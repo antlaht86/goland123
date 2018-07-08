@@ -4,6 +4,8 @@ import (
 	_ "github.com/lib/pq"
 	"net/http"
 	"io"
+	"os"
+	"log"
 )
 
 type Book struct {
@@ -23,10 +25,15 @@ func c(res http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		log.Fatal("$PORT must be set")
+	}
 	http.Handle("/dog", http.HandlerFunc(d))
 	http.Handle("/cat", http.HandlerFunc(c))
 
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(port, nil)
 	//db, err := sql.Open("postgres", "postgres://bond:password@localhost/bookstore?sslmode=disable")
 	//if err != nil {
 	//	panic(err)
